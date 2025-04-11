@@ -16,7 +16,7 @@ def train(model, device, train_loader, valid_loader, criterion, optimizer, num_e
         correct = 0
         loss_epoch = []
         model.train()
-        for i, (input, label) in tqdm.tqdm(enumerate(train_loader)):
+        for input, label in train_loader:
             input, label = input.to(device), label.to(device)
 
             #forward pass
@@ -44,7 +44,7 @@ def train(model, device, train_loader, valid_loader, criterion, optimizer, num_e
         correct = 0
         lost_epoch_val = []
         with torch.no_grad():
-            for input, label in tqdm.tqdm(valid_loader):
+            for input, label in valid_loader:
                 input, label = input.to(device), label.to(device)
                 output = model(input)
                 loss = criterion(output, label)

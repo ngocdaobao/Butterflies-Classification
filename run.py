@@ -8,7 +8,8 @@ import torch.optim as optim
 import torch.nn as nn
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model = alexnet_model().to(device)
+model = alexnet_model()
+model.to(device)
 batch_size = 32
 
 criterion = nn.CrossEntropyLoss()

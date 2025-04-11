@@ -18,6 +18,7 @@ optimizer = optim.Adam(model.parameters(), lr=0.001)
 train_loader, valid_loader, test_loader = get_data_loader(batch_size=batch_size)
 
 # Train the model
+print('Training started...')
 train(model, device, train_loader, valid_loader, criterion, optimizer, num_epochs=10)
 
 # Save the model

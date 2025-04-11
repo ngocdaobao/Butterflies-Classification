@@ -10,7 +10,7 @@ def train(model, device, train_loader, valid_loader, criterion, optimizer, num_e
     acc_list = []
     loss_val_list = []
     acc_val_list = []
-    print('Training started...')
+    
     for epoch in tqdm.tqdm(range(num_epochs)):
         correct = 0
         loss_epoch = []

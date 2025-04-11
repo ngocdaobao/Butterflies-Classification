@@ -6,6 +6,7 @@ import torch
 
 class alexnet_model(nn.Module):
     def __init__(self, num_classes=100):
+        super(alexnet_model, self).__init__()
         self.model = alexnet(pretrained=True)
         self.model.classifier[6] = nn.Linear(4096, num_classes)
         # Freeze the feature extractor layers

@@ -11,7 +11,8 @@ def train(model, device, train_loader, valid_loader, criterion, optimizer, num_e
     loss_val_list = []
     acc_val_list = []
     
-    for epoch in tqdm.tqdm(range(num_epochs)):
+    for epoch in range(num_epochs):
+        print(f'Epoch {epoch+1}/{num_epochs}')
         correct = 0
         loss_epoch = []
         model.train()
@@ -35,7 +36,7 @@ def train(model, device, train_loader, valid_loader, criterion, optimizer, num_e
         loss_list.append(sum(loss_epoch)/len(loss_epoch))
         acc = correct/len(train_loader.dataset)
         acc_list.append(acc)
-        print(f'Epoch {epoch+1}/{num_epochs} Loss: {loss_list[-1]:.4f}, Accuracy: {acc:.4f}')
+        print(f'Loss: {loss_list[-1]:.4f}, Accuracy: {acc:.4f}')
 
         #validation
         print('Validating...')

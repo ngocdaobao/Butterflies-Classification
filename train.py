@@ -4,6 +4,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 from model import alexnet_model
 import tqdm
+from loguru import logger
 
 def train(model, device, train_loader, valid_loader, criterion, optimizer, num_epochs=10):
     loss_list = []
@@ -12,7 +13,8 @@ def train(model, device, train_loader, valid_loader, criterion, optimizer, num_e
     acc_val_list = []
     
     for epoch in range(num_epochs):
-        print(f'Epoch {epoch+1}/{num_epochs}')
+        logger.info(f'EPOCH: {epoch+1}/{num_epochs}')
+        
         correct = 0
         loss_epoch = []
         model.train()
@@ -36,7 +38,7 @@ def train(model, device, train_loader, valid_loader, criterion, optimizer, num_e
         loss_list.append(sum(loss_epoch)/len(loss_epoch))
         acc = correct/len(train_loader.dataset)
         acc_list.append(acc)
-        print(f'Loss: {loss_list[-1]:.4f}, Accuracy: {acc:.4f}')
+        logger.info(f'LOSS: {loss_list[-1]:.2f}, ACCURACY: {acc:.2f}')
 
         #validation
         print('Validating...')
@@ -53,5 +55,5 @@ def train(model, device, train_loader, valid_loader, criterion, optimizer, num_e
                 correct += (pred == label).sum().item()
         acc_val = correct/len(valid_loader.dataset)
         loss_val = sum(lost_epoch_val)/len(lost_epoch_val)
-        print(f'Validation Loss: {loss_val:.4f}, Validation Accuracy: {acc_val:.4f}')
+        logger.info(f'VALIDATION LOSS: {loss_val:.2f}, VALIDATION ACCURACY: {acc_val:.2f}')
     return loss_list, acc_list, loss_val_list, acc_val_list

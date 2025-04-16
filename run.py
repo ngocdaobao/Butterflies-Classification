@@ -6,11 +6,12 @@ import tqdm
 import torch
 import torch.optim as optim
 import torch.nn as nn
+from loguru import logger
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = alexnet_model()
 model.to(device)
-batch_size = 32
+batch_size = 64
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
@@ -18,11 +19,13 @@ optimizer = optim.Adam(model.parameters(), lr=0.001)
 train_loader, valid_loader, test_loader = get_data_loader(batch_size=batch_size)
 
 # Train the model
-print('Training started...')
+logger.info("Starting training...")
 train(model, device, train_loader, valid_loader, criterion, optimizer, num_epochs=10)
 
 # Save the model
+logger.info("Saving model...")
 model.state_dict(torch.save(model.state_dict(), 'model.pth'))
 
 # Evaluate the model
+logger.info("Evaluating model...")
 evaluate(model, device, test_loader)

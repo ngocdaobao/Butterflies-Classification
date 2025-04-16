@@ -18,3 +18,13 @@ class alexnet_model(nn.Module):
 
     def forward(self, x):
         return self.model(x)
+    
+class SVM(nn.Module):
+    def __init__(self, input_dim, output_dim, kernel='linear'):
+        super(SVM, self).__init__()
+        self.kernel = kernel
+        self.model = nn.Linear(input_dim, output_dim)
+
+    def forward(self, x):
+        x = self.model(x)
+        return x

@@ -1,6 +1,7 @@
 import torch
 import torch.nn 
 import tqdm
+from loguru import logger
 
 def evaluate(model, device, test_loader):
     model.eval()
@@ -13,5 +14,5 @@ def evaluate(model, device, test_loader):
             acc = (pred == label).sum().item()
             acc_list.append(acc)
     acc_score = sum(acc_list)/len(test_loader.dataset)
-    print(f'Test Accuracy: {acc_score:.4f}')
+    logger.info(f'Test Accuracy: {acc_score:.2f}')
     return acc_score

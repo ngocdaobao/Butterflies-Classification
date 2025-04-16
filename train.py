@@ -38,7 +38,7 @@ def train(model, device, train_loader, valid_loader, criterion, optimizer, sched
         loss_list.append(sum(loss_epoch)/len(loss_epoch))
         acc = correct/len(train_loader.dataset)
         acc_list.append(acc)
-        logger.info(f'TRAINING LOSS: {loss_list[-1]:.2f}, TRAINING ACCURACY: {acc:.2f}')
+        logger.info(f'TRAINING LOSS: {loss_list[-1]:.4f}, TRAINING ACCURACY: {acc:.4f}')
 
         model.eval()
         correct = 0
@@ -53,7 +53,7 @@ def train(model, device, train_loader, valid_loader, criterion, optimizer, sched
                 correct += (pred == label).sum().item()
         acc_val = correct/len(valid_loader.dataset)
         loss_val = sum(lost_epoch_val)/len(lost_epoch_val)
-        logger.info(f'VALIDATION LOSS: {loss_val:.2f}, VALIDATION ACCURACY: {acc_val:.2f}\n\n')
+        logger.info(f'VALIDATION LOSS: {loss_val:.4f}, VALIDATION ACCURACY: {acc_val:.4f}\n\n')
 
         scheduler.step()
     return loss_list, acc_list, loss_val_list, acc_val_list

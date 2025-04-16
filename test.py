@@ -14,5 +14,5 @@ def evaluate(model, device, test_loader):
             acc = (pred == label).sum().item()
             acc_list.append(acc)
     acc_score = sum(acc_list)/len(test_loader.dataset)
-    logger.info(f'TEST ACCURACY: {acc_score:.2f}')
+    logger.info(f'TEST ACCURACY: {acc_score:.4f}')
     return acc_score

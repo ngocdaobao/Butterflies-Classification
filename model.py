@@ -24,6 +24,8 @@ class SVM(nn.Module):
         super(SVM, self).__init__()
         self.kernel = kernel
         self.model = nn.Linear(input_dim, output_dim)
+        for param in self.model.parameters():
+            param.requires_grad = True
 
     def forward(self, x):
         x = self.model(x)

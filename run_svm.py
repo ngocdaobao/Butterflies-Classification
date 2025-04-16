@@ -1,5 +1,5 @@
 from dataset.dataloader import get_data_loader
-from model import alexnet_model
+from model import alexnet_model, SVM
 from train import train
 from test import evaluate
 import tqdm
@@ -9,7 +9,7 @@ import torch.nn as nn
 from loguru import logger
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model = alexnet_model()
+model = SVM()
 model.to(device)
 batch_size = 64
 

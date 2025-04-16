@@ -21,8 +21,8 @@ test_set = ImageFolder(root='dataset/test',
 # Create the dataloaders
 def get_data_loader(batch_size=32):
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
-    valid_loader = DataLoader(valid_set, batch_size=batch_size, shuffle=False)
-    test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False)
+    valid_loader = DataLoader(valid_set, batch_size=batch_size, shuffle=True)
+    test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=True)
     return train_loader, valid_loader, test_loader
 
 

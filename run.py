@@ -15,7 +15,7 @@ batch_size = 64
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
-scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
+scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=8, gamma=0.1)
 
 train_loader, valid_loader, test_loader = get_data_loader(batch_size=batch_size)
 

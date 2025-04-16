@@ -14,13 +14,14 @@ model.to(device)
 batch_size = 64
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
 
 train_loader, valid_loader, test_loader = get_data_loader(batch_size=batch_size)
 
 # Train the model
 logger.info("Starting training...")
-train(model, device, train_loader, valid_loader, criterion, optimizer, num_epochs=10)
+train(model, device, train_loader, valid_loader, criterion, optimizer, scheduler, num_epochs=20)
 
 # Save the model
 logger.info("Saving model...")

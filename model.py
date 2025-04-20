@@ -27,17 +27,18 @@ class SVM(nn.Module):
             self.feature_extractor = nn.Sequential(
                 alex.features,
                 alex.avgpool,  # Add avgpool layer to match the output size
-                nn.Flatten(),  # Flatten the output
-                alex.classifier[:-1]  # Remove the last layer
-                
+                nn.Flatten()  # Remove the last layer
             )  # Remove the last layer
+            self.projection = alex.classifier[:-1] 
         svm_head = nn.Linear(4096, 100)
-        self.model = nn.Sequential(self.feature_extractor, svm_head)
+        self.model = nn.Sequential(self.feature_extractor, self.projection, svm_head)
         # Freeze the feature extractor layers
         for param in self.feature_extractor.parameters():
             param.requires_grad = False
         # Set the classifier layers to be trainable
         for param in svm_head.parameters():
+            param.requires_grad = True
+        for param in self.projection.parameters():
             param.requires_grad = True
     def forward(self, x):
         x = self.model(x)

@@ -24,7 +24,13 @@ class SVM(nn.Module):
         super(SVM, self).__init__()
         if kernel == 'alexnet':
             alex = alexnet(pretrained=True)
-            self.feature_extractor = nn.Sequential(*list(alex.children())[:-1])  # Remove the last layer
+            self.feature_extractor = nn.Sequential(
+                alex.features,
+                alex.avgpool,  # Add avgpool layer to match the output size
+                nn.Flatten(),  # Flatten the output
+                alex.classifier[:-1]  # Remove the last layer
+                
+            )  # Remove the last layer
         svm_head = nn.Linear(4096, 100)
         self.model = nn.Sequential(self.feature_extractor, svm_head)
         # Freeze the feature extractor layers

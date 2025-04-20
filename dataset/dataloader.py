@@ -5,15 +5,15 @@ from torch.utils.data import DataLoader
 
 
 # Load the dataset
-train_set = ImageFolder(root='Butterflies-Classification/dataset/train', 
+train_set = ImageFolder(root='dataset\train', 
                         transform=Compose([Resize((224, 224)), 
                                            ToTensor(), 
                                            Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]))
-valid_set = ImageFolder(root='Butterflies-Classification/dataset/valid', 
+valid_set = ImageFolder(root='dataset/valid', 
                         transform=Compose([Resize((224, 224)), 
                                            ToTensor(), 
                                            Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]))
-test_set = ImageFolder(root='Butterflies-Classification/dataset/test',
+test_set = ImageFolder(root='dataset/test',
                         transform=Compose([Resize((224, 224)), 
                                            ToTensor(), 
                                            Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]))

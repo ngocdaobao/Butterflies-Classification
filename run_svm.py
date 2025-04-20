@@ -13,7 +13,7 @@ model = alexnet_model()
 model.to(device)
 batch_size = 64
 
-criterion = nn.MultiMarginLoss()
+criterion = nn.HingeEmbeddingLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.8)
 scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=4, gamma=0.1)
 

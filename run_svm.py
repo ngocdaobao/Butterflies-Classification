@@ -9,7 +9,7 @@ import torch.nn as nn
 from loguru import logger
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model = SVM()
+model = alexnet_model()
 model.to(device)
 batch_size = 64
 

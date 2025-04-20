@@ -9,11 +9,11 @@ import torch.nn as nn
 from loguru import logger
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model = alexnet_model()
+model = SVM()
 model.to(device)
 batch_size = 64
 
-criterion = nn.MultiMarginLoss()
+criterion = nn.MultiMarginLoss(margin=1.0, p=1, reduction='mean')
 optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
 #scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=4, gamma=0.1)
 

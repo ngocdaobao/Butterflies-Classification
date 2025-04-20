@@ -20,14 +20,19 @@ class alexnet_model(nn.Module):
         return self.model(x)
     
 class SVM(nn.Module):
-    def __init__(self, input_dim = 3*224*224, output_dim=100, kernel='linear'):
+    def __init__(self, kernel='alexnet'):
         super(SVM, self).__init__()
-        self.kernel = kernel
-        self.flatten = nn.Flatten()
-        self.model = nn.Linear(input_dim, output_dim)
-        for param in self.model.parameters():
+        if kernel == 'alexnet':
+            alex = alexnet(pretrained=True)
+            self.feature_extractor = nn.Sequential(*list(alex.children())[:-1])  # Remove the last layer
+        svm_head = nn.Linear(4096, 100)
+        self.model = nn.Sequential(self.feature_extractor, svm_head)
+        # Freeze the feature extractor layers
+        for param in self.feature_extractor.parameters():
+            param.requires_grad = False
+        # Set the classifier layers to be trainable
+        for param in svm_head.parameters():
             param.requires_grad = True
-
     def forward(self, x):
         x = self.model(x)
         return x

@@ -6,7 +6,7 @@ from model import alexnet_model
 import tqdm
 from loguru import logger
 
-def train(model, device, train_loader, valid_loader, criterion, optimizer, scheduler, num_epochs=10):
+def train(model, device, train_loader, valid_loader, criterion, optimizer, scheduler = None, num_epochs=10):
     loss_list = []
     acc_list = []
     loss_val_list = []
@@ -55,5 +55,7 @@ def train(model, device, train_loader, valid_loader, criterion, optimizer, sched
         loss_val = sum(lost_epoch_val)/len(lost_epoch_val)
         logger.info(f'VALIDATION LOSS: {loss_val:.4f}, VALIDATION ACCURACY: {acc_val:.4f}\n\n')
 
-        scheduler.step()
+        if scheduler:
+            # Adjust the learning rate
+            scheduler.step()
     return loss_list, acc_list, loss_val_list, acc_val_list

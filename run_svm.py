@@ -1,4 +1,4 @@
-from dataset.dataloader import get_data_loader
+from dataloader import get_data_loader
 from model import alexnet_model, SVM
 from train import train
 from test import evaluate

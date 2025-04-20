@@ -6,56 +6,56 @@ from model import alexnet_model
 import tqdm
 from loguru import logger
 
-def train(model, device, train_loader, valid_loader, criterion, optimizer, scheduler = None, num_epochs=10):
-    loss_list = []
-    acc_list = []
-    loss_val_list = []
-    acc_val_list = []
-    
-    for epoch in range(num_epochs):
-        logger.info(f'EPOCH: {epoch+1}/{num_epochs}')
+def train(model, device, train_loader, valid_loader,
+          criterion, optimizer, scheduler=None, num_epochs=10):
+    train_losses, train_accs = [], []
+    val_losses,   val_accs   = [], []
+
+    for epoch in range(1, num_epochs+1):
+        logger.info(f"EPOCH {epoch}/{num_epochs}")
         
-        correct = 0
-        loss_epoch = []
+        # ——— TRAINING ———
         model.train()
-        for input, label in train_loader:
-            input, label = input.to(device), label.to(device)
+        running_loss, running_correct = 0.0, 0
+        for inputs, labels in train_loader:
+            inputs, labels = inputs.to(device), labels.to(device)
 
-            #forward pass
-            output = model(input)
-            loss = criterion(output, label)
-            loss_epoch.append(loss.item())
+            outputs = model(inputs)
+            loss    = criterion(outputs, labels)
 
-            #backward pass
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
 
-            #compute accuracy
-            _, pred = torch.max(output, 1)
-            correct += (pred == label).sum().item()
-        
-        loss_list.append(sum(loss_epoch)/len(loss_epoch))
-        acc = correct/len(train_loader.dataset)
-        acc_list.append(acc)
-        logger.info(f'TRAINING LOSS: {loss_list[-1]:.4f}, TRAINING ACCURACY: {acc:.4f}')
+            running_loss   += loss.item() * inputs.size(0)
+            running_correct+= (outputs.argmax(1) == labels).sum().item()
 
+        epoch_loss = running_loss / len(train_loader.dataset)
+        epoch_acc  = running_correct / len(train_loader.dataset)
+        train_losses.append(epoch_loss)
+        train_accs.append(epoch_acc)
+        logger.info(f" TRAIN   loss={epoch_loss:.4f}  acc={epoch_acc:.4f}")
+
+        # ——— VALIDATION ———
         model.eval()
-        correct = 0
-        lost_epoch_val = []
+        val_running_loss, val_running_correct = 0.0, 0
         with torch.no_grad():
-            for input, label in valid_loader:
-                input, label = input.to(device), label.to(device)
-                output = model(input)
-                loss = criterion(output, label)
-                lost_epoch_val.append(loss.item())
-                _, pred = torch.max(output, 1)
-                correct += (pred == label).sum().item()
-        acc_val = correct/len(valid_loader.dataset)
-        loss_val = sum(lost_epoch_val)/len(lost_epoch_val)
-        logger.info(f'VALIDATION LOSS: {loss_val:.4f}, VALIDATION ACCURACY: {acc_val:.4f}\n\n')
+            for inputs, labels in valid_loader:
+                inputs, labels = inputs.to(device), labels.to(device)
+                outputs = model(inputs)
+                loss    = criterion(outputs, labels)
 
-        if scheduler:
-            # Adjust the learning rate
+                val_running_loss   += loss.item() * inputs.size(0)
+                val_running_correct+= (outputs.argmax(1) == labels).sum().item()
+
+        val_loss = val_running_loss / len(valid_loader.dataset)
+        val_acc  = val_running_correct / len(valid_loader.dataset)
+        val_losses.append(val_loss)
+        val_accs.append(val_acc)
+        logger.info(f" VALID   loss={val_loss:.4f}  acc={val_acc:.4f}\n")
+
+        # ——— SCHEDULER ———
+        if scheduler is not None:
             scheduler.step()
-    return loss_list, acc_list, loss_val_list, acc_val_list
+
+    return train_losses, train_accs, val_losses, val_accs

@@ -5,15 +5,15 @@ from torch.utils.data import DataLoader
 
 
 # Load the dataset
-train_set = ImageFolder(root='dataset\train', 
+train_set = ImageFolder(root='train', 
                         transform=Compose([Resize((224, 224)), 
                                            ToTensor(), 
                                            Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]))
-valid_set = ImageFolder(root='dataset/valid', 
+valid_set = ImageFolder(root='valid', 
                         transform=Compose([Resize((224, 224)), 
                                            ToTensor(), 
                                            Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]))
-test_set = ImageFolder(root='dataset/test',
+test_set = ImageFolder(root='test',
                         transform=Compose([Resize((224, 224)), 
                                            ToTensor(), 
                                            Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]))

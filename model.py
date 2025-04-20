@@ -20,9 +20,10 @@ class alexnet_model(nn.Module):
         return self.model(x)
     
 class SVM(nn.Module):
-    def __init__(self, input_dim, output_dim, kernel='linear'):
+    def __init__(self, input_dim = 3*224*224, output_dim=100, kernel='linear'):
         super(SVM, self).__init__()
         self.kernel = kernel
+        self.flatten = nn.Flatten()
         self.model = nn.Linear(input_dim, output_dim)
         for param in self.model.parameters():
             param.requires_grad = True

@@ -26,4 +26,36 @@ def get_data_loader(batch_size=64):
     test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=True)
     return train_loader, valid_loader, test_loader
 
+def get_data_svm():
+    X_train = []
+    y_train = []
+
+    X_test = []
+    y_test = []
+
+    X_valid = []
+    y_valid = []
+
+    # Load the training data
+    for data, label in train_set:
+        data = data[0].unsqueeze(0).view(-1).numpy()
+        X_train.append(data)
+        y_train.append(label)
+    
+    # Load the test data
+    for data, label in test_set:
+        data = data[0].unsqueeze(0).view(-1).numpy()
+        X_test.append(data)
+        y_test.append(label)
+    
+    # Load the validation data
+    for data, label in valid_set:
+        data = data[0].unsqueeze(0).view(-1).numpy()
+        X_valid.append(data)
+        y_valid.append(label)
+        
+    return X_train, y_train, X_test, y_test, X_valid, y_valid
+
+
+
 

@@ -6,17 +6,19 @@ from sklearn.svm import SVC
 #Keep the feature extractor fixed, change output into 100 classes
 
 class alexnet_model(nn.Module):
-    def __init__(self, num_classes=100, pretrained=True):
+    def __init__(self, num_classes=100, pretrained=True, full_finetune=True):
         super(alexnet_model, self).__init__()
-        self.model = alexnet(pretrained=True)
+        self.model = alexnet(pretrained=pretrained)
         self.model.classifier[6] = nn.Linear(4096, num_classes)
-        # Freeze the feature extractor layers if pretrained is True
-        if pretrained:
-            for param in self.model.features.parameters():
-                param.requires_grad = False
-        else:
+
+        # Set feature extractor layers to be trainable if full_finetune:
+        if full_finetune:
             for param in self.model.features.parameters():
                 param.requires_grad = True
+        else:
+            for param in self.model.features.parameters():
+                param.requires_grad = False
+
         # Set the classifier layers to be trainable
         for param in self.model.classifier.parameters():
             param.requires_grad = True
@@ -24,16 +26,37 @@ class alexnet_model(nn.Module):
     def forward(self, x):
         return self.model(x)
     
-class SVM:
-    def __init__(self, kernel='linear'):
-        self.kernel = kernel
-        self.svm = SVC(kernel=self.kernel, probability=True)
+""""alexnet implement from scratch
+class alexnet_model_scratch(nn.Module):
+    def __init__(self, num_classes=100):
+        super(alexnet_model_scratch, self).__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(3,64, kernel_size=11, stride=4, padding=2),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=3, stride=2, padding=0, dilation=1, ceil_mode=False),
+            nn.Conv2d(64, 192, kernel_size=5, stride=1, padding=2),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=3, stride=2, padding=0, dilation=1, ceil_mode=False),
+            nn.Conv2d(192, 384, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(384, 256, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=3, stride=2, padding=0, dilation=1, ceil_mode=False)
+        )
+        self.avgpool = nn.AdaptiveAvgPool2d(output_size=(6, 6))
+        self.classifier = nn.Sequential(
+            nn.Dropout(p=0.5),
+            nn.Linear(256 * 6 * 6, 4096),
+            nn.ReLU(inplace=True),
+            nn.Dropout(p=0.5),
+            nn.Linear(4096, 4096),
+            nn.ReLU(inplace=True),
+            nn.Linear(4096, num_classes)
+        )
+"""  
 
-    def predict(self, X_train, y_train, X_test, y_test, X_valid, y_valid):
-        self.svm.fit(X_train, y_train)
-        predict = self.svm.predict(X_test)
-        acc = (predict == y_test).sum()/len(y_test)
-        return acc
 
 """	
 class SVM(nn.Module):

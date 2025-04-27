@@ -1,3 +1,0 @@
-[submodule "third_party/thundersvm"]
-	path = third_party/thundersvm
-	url = https://github.com/Xtra-Computing/thundersvm.git

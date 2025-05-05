@@ -31,7 +31,7 @@
         <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
             <div class="md:flex">
                 <div class="md:w-1/2 p-6">
-                    <h2 class="text-xl font-semibold text-green-800 mb-4">Tải lên ảnh</h2>
+                    <h2 class="text-xl font-semibold text-green-800 mb-4">Tải ảnh lên</h2>
                     
                     <div id="upload-container" class="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer hover:border-green-500 transition-colors">
                         <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -70,24 +70,7 @@
                     </div>
                     
                     <div id="classification-result" class="hidden space-y-4">
-                        <div class="flex justify-between items-center">
-                            <h3 id="common-name" class="text-xl font-bold text-green-700"></h3>
-                            <span id="confidence" class="bg-green-100 text-green-800 font-medium px-2 py-1 rounded-full text-sm"></span>
-                        </div>
-                        
-                        <p id="species" class="text-gray-700 italic"></p>
-                        
-                        <div class="mt-4 space-y-2">
-                            <div>
-                                <span class="font-medium">Họ:</span> <span id="family"></span>
-                            </div>
-                            <div>
-                                <span class="font-medium">Môi trường sống:</span> <span id="habitat"></span>
-                            </div>
-                            <div>
-                                <span class="font-medium">Phân bố:</span> <span id="distribution"></span>
-                            </div>
-                        </div>
+                        <h3 id="common-name" class="text-xl font-bold text-green-700"></h3>
                     </div>
                 </div>
             </div>
@@ -169,8 +152,6 @@
                     const result = await response.json();
                     
                     document.getElementById('common-name').textContent = result.commonName;
-                    document.getElementById('confidence').textContent = `${result.confidence.toFixed(1)}% chính xác`;
-                    document.getElementById('species').textContent = result.species;
                     
                     loadingEl.classList.add('hidden');
                     resultEl.classList.remove('hidden');

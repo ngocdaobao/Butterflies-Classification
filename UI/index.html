@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân loại bướm</title>
+    <!-- Tailwind CDN cho phát triển nhanh, trong sản phẩm thực tế nên tải về -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #16a34a;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto py-8 px-4">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-green-700">Phân Loại Loài Bướm</h1>
+            <p class="text-gray-600 mt-2">Tải lên ảnh để nhận dạng loài bướm</p>
+        </header>
+        
+        <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="md:flex">
+                <!-- Phần tải lên ảnh -->
+                <div class="md:w-1/2 p-6">
+                    <h2 class="text-xl font-semibold text-green-800 mb-4">Tải lên ảnh</h2>
+                    
+                    <div id="upload-container" class="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer hover:border-green-500 transition-colors">
+                        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        <p class="mt-2 text-sm text-gray-500">Nhấn để chọn ảnh bướm</p>
+                        <input type="file" id="file-input" accept="image/*" class="hidden">
+                    </div>
+                    
+                    <div id="image-preview-container" class="mt-4 hidden">
+                        <div class="relative">
+                            <img id="image-preview" src="#" alt="Ảnh bướm đã chọn" class="w-full h-48 object-contain rounded-lg">
+                            <button id="change-image-btn" class="absolute top-2 right-2 bg-white p-1 rounded-full shadow-md hover:bg-gray-100">
+                                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button id="classify-btn" class="mt-6 w-full py-2 px-4 bg-gray-300 text-gray-500 rounded-md cursor-not-allowed" disabled>
+                        Phân loại
+                    </button>
+                </div>
+                
+                <!-- Phần kết quả -->
+                <div class="md:w-1/2 bg-gray-50 p-6">
+                    <h2 class="text-xl font-semibold text-green-800 mb-4">Kết quả phân loại</h2>
+                    
+                    <div id="loading" class="hidden flex flex-col items-center py-8">
+                        <div class="spinner mb-4"></div>
+                        <p class="text-gray-600">Đang phân tích ảnh...</p>
+                    </div>
+                    
+                    <div id="empty-result" class="text-center py-12 text-gray-500">
+                        <p>Tải lên ảnh bướm và nhấn phân loại để xem kết quả</p>
+                    </div>
+                    
+                    <div id="classification-result" class="hidden space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 id="common-name" class="text-xl font-bold text-green-700"></h3>
+                            <span id="confidence" class="bg-green-100 text-green-800 font-medium px-2 py-1 rounded-full text-sm"></span>
+                        </div>
+                        
+                        <p id="species" class="text-gray-700 italic"></p>
+                        
+                        <div class="mt-4 space-y-2">
+                            <div>
+                                <span class="font-medium">Họ:</span> <span id="family"></span>
+                            </div>
+                            <div>
+                                <span class="font-medium">Môi trường sống:</span> <span id="habitat"></span>
+                            </div>
+                            <div>
+                                <span class="font-medium">Phân bố:</span> <span id="distribution"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="mt-8 text-center text-gray-500 text-sm">
+            &copy; <span id="current-year"></span> Hệ thống phân loại bướm
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cập nhật năm hiện tại
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            
+            // Các phần tử DOM
+            const fileInput = document.getElementById('file-input');
+            const uploadContainer = document.getElementById('upload-container');
+            const imagePreviewContainer = document.getElementById('image-preview-container');
+            const imagePreview = document.getElementById('image-preview');
+            const changeImageBtn = document.getElementById('change-image-btn');
+            const classifyBtn = document.getElementById('classify-btn');
+            const loadingEl = document.getElementById('loading');
+            const emptyResultEl = document.getElementById('empty-result');
+            const resultEl = document.getElementById('classification-result');
+            
+            let selectedFile = null;
+            
+            // Sự kiện click vào khu vực tải lên
+            uploadContainer.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            // Sự kiện khi chọn file
+            fileInput.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    selectedFile = e.target.files[0];
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        imagePreview.src = event.target.result;
+                        uploadContainer.classList.add('hidden');
+                        imagePreviewContainer.classList.remove('hidden');
+                        
+                        // Kích hoạt nút phân loại
+                        classifyBtn.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+                        classifyBtn.classList.add('bg-green-600', 'hover:bg-green-700', 'text-white');
+                        classifyBtn.disabled = false;
+                        
+                        // Ẩn kết quả cũ nếu có
+                        resultEl.classList.add('hidden');
+                        emptyResultEl.classList.remove('hidden');
+                    };
+                    
+                    reader.readAsDataURL(selectedFile);
+                }
+            });
+            
+            // Sự kiện đổi ảnh
+            changeImageBtn.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            // Sự kiện nhấn nút phân loại
+            classifyBtn.addEventListener('click', async function() {
+                if (!selectedFile) return;
+                
+                // Hiển thị loading
+                loadingEl.classList.remove('hidden');
+                emptyResultEl.classList.add('hidden');
+                resultEl.classList.add('hidden');
+                
+                try {
+                    // Tạo FormData để gửi file
+                    const formData = new FormData();
+                    formData.append('image', selectedFile);
+                    
+                    // Gọi API
+                    const response = await fetch('/api/classify', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Lỗi: ${response.status}`);
+                    }
+                    
+                    // Xử lý kết quả
+                    const result = await response.json();
+                    
+                    // Cập nhật UI với kết quả
+                    document.getElementById('common-name').textContent = result.commonName;
+                    document.getElementById('confidence').textContent = `${result.confidence.toFixed(1)}% chính xác`;
+                    document.getElementById('species').textContent = result.species;
+                    document.getElementById('family').textContent = result.additionalInfo.family;
+                    document.getElementById('habitat').textContent = result.additionalInfo.habitat;
+                    document.getElementById('distribution').textContent = result.additionalInfo.distribution;
+                    
+                    // Hiển thị kết quả
+                    loadingEl.classList.add('hidden');
+                    resultEl.classList.remove('hidden');
+                    
+                } catch (error) {
+                    console.error('Lỗi khi phân loại:', error);
+                    alert('Có lỗi xảy ra khi phân loại ảnh. Vui lòng thử lại.');
+                    
+                    // Hiển thị lại trạng thái trống
+                    loadingEl.classList.add('hidden');
+                    emptyResultEl.classList.remove('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

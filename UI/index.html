@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phân loại bướm</title>
-    <!-- Tailwind CDN cho phát triển nhanh, trong sản phẩm thực tế nên tải về -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .spinner {
@@ -31,7 +30,6 @@
         
         <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
             <div class="md:flex">
-                <!-- Phần tải lên ảnh -->
                 <div class="md:w-1/2 p-6">
                     <h2 class="text-xl font-semibold text-green-800 mb-4">Tải lên ảnh</h2>
                     
@@ -59,7 +57,6 @@
                     </button>
                 </div>
                 
-                <!-- Phần kết quả -->
                 <div class="md:w-1/2 bg-gray-50 p-6">
                     <h2 class="text-xl font-semibold text-green-800 mb-4">Kết quả phân loại</h2>
                     
@@ -103,10 +100,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Cập nhật năm hiện tại
             document.getElementById('current-year').textContent = new Date().getFullYear();
             
-            // Các phần tử DOM
             const fileInput = document.getElementById('file-input');
             const uploadContainer = document.getElementById('upload-container');
             const imagePreviewContainer = document.getElementById('image-preview-container');
@@ -119,12 +114,10 @@
             
             let selectedFile = null;
             
-            // Sự kiện click vào khu vực tải lên
             uploadContainer.addEventListener('click', function() {
                 fileInput.click();
             });
             
-            // Sự kiện khi chọn file
             fileInput.addEventListener('change', function(e) {
                 if (e.target.files && e.target.files[0]) {
                     selectedFile = e.target.files[0];
@@ -135,12 +128,11 @@
                         uploadContainer.classList.add('hidden');
                         imagePreviewContainer.classList.remove('hidden');
                         
-                        // Kích hoạt nút phân loại
                         classifyBtn.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
                         classifyBtn.classList.add('bg-green-600', 'hover:bg-green-700', 'text-white');
                         classifyBtn.disabled = false;
                         
-                        // Ẩn kết quả cũ nếu có
+                    
                         resultEl.classList.add('hidden');
                         emptyResultEl.classList.remove('hidden');
                     };
@@ -149,26 +141,22 @@
                 }
             });
             
-            // Sự kiện đổi ảnh
+            
             changeImageBtn.addEventListener('click', function() {
                 fileInput.click();
             });
             
-            // Sự kiện nhấn nút phân loại
             classifyBtn.addEventListener('click', async function() {
                 if (!selectedFile) return;
                 
-                // Hiển thị loading
                 loadingEl.classList.remove('hidden');
                 emptyResultEl.classList.add('hidden');
                 resultEl.classList.add('hidden');
                 
                 try {
-                    // Tạo FormData để gửi file
                     const formData = new FormData();
                     formData.append('image', selectedFile);
                     
-                    // Gọi API
                     const response = await fetch('/api/classify', {
                         method: 'POST',
                         body: formData
@@ -178,18 +166,12 @@
                         throw new Error(`Lỗi: ${response.status}`);
                     }
                     
-                    // Xử lý kết quả
                     const result = await response.json();
                     
-                    // Cập nhật UI với kết quả
                     document.getElementById('common-name').textContent = result.commonName;
                     document.getElementById('confidence').textContent = `${result.confidence.toFixed(1)}% chính xác`;
                     document.getElementById('species').textContent = result.species;
-                    document.getElementById('family').textContent = result.additionalInfo.family;
-                    document.getElementById('habitat').textContent = result.additionalInfo.habitat;
-                    document.getElementById('distribution').textContent = result.additionalInfo.distribution;
                     
-                    // Hiển thị kết quả
                     loadingEl.classList.add('hidden');
                     resultEl.classList.remove('hidden');
                     
@@ -197,7 +179,6 @@
                     console.error('Lỗi khi phân loại:', error);
                     alert('Có lỗi xảy ra khi phân loại ảnh. Vui lòng thử lại.');
                     
-                    // Hiển thị lại trạng thái trống
                     loadingEl.classList.add('hidden');
                     emptyResultEl.classList.remove('hidden');
                 }

@@ -14,6 +14,8 @@ import numpy as np
 
 parser = arg.ArgumentParser(description="Train SVM on the Butterflies dataset")
 parser.add_argument('--kernel', type=str, default='linear', help='Kernel type for SVM')
+parser.add_argument('--batch_size', type=int, default=64, help='Batch size for training')
+parser.add_argument('--seed', type=int, default=42, help='Random seed for reproducibility')
 args = parser.parse_args()
 
 kernel = args.kernel
@@ -27,7 +29,7 @@ if kernel == 'cnn':
         param.requires_grad = False
     feature_extractor = extractor_model.features.to(device).eval()
     train_loader, valid_loader, test_loader = get_data_loader(batch_size=64)
-
+    torch.manual_seed(args.seed)  # Set the random seed for reproducibility
     train_features = []
     train_labels = []
     for data, labels in tqdm.tqdm(train_loader):

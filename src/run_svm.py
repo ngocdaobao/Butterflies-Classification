@@ -51,7 +51,7 @@ if kernel == 'cnn':
     y_test = np.hstack(test_labels)
     
     model = SVC()
-    model.fit(X_train)
+    model.fit(X_train, y_train)
     pred = model.predict(X_test)
     acc = (pred == y_test).sum() / len(y_test)
     logger.info(f"SVM with {kernel} kernel accuracy: {acc:.4f}")

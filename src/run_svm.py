@@ -43,10 +43,16 @@ if kernel == 'cnn':
         test_features.append(features)
         test_labels.append(labels.cpu().numpy())
     
+    X_train = np.vstack(train_features)    
+    y_train = np.hstack(train_labels)
+
+    X_test = np.vstack(test_features)
+    y_test = np.hstack(test_labels)
+    
     model = SVC()
-    model.fit(train_features, train_labels)
-    pred = model.predict(test_features)
-    acc = (pred == test_labels).sum() / len(test_labels)
+    model.fit(X_train)
+    pred = model.predict(X_test)
+    acc = (pred == y_test).sum() / len(y_test)
     logger.info(f"SVM with {kernel} kernel accuracy: {acc:.4f}")
 
 else:

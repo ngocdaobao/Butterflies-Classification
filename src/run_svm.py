@@ -20,10 +20,10 @@ kernel = args.kernel
 #SVM with pretrained alexnet model
 #extract features from the model
 if kernel == 'cnn':
-    extractor_model = alexnet(pretrained=True)
-    feature_extractor = extractor_model.features.eval()
-    train_loader, valid_loader, test_loader = get_data_loader(batch_size=64)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    extractor_model = alexnet(pretrained=True)
+    feature_extractor = extractor_model.features.to(device).eval()
+    train_loader, valid_loader, test_loader = get_data_loader(batch_size=64)
 
     train_features = []
     train_labels = []

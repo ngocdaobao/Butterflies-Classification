@@ -12,7 +12,7 @@ from loguru import logger
 import argparse as arg
 
 parser = arg.ArgumentParser(description="Train SVM on the Butterflies dataset")
-parser.add_argument('kernel', type=str, default='linear', help='Kernel type for SVM')
+parser.add_argument('--kernel', type=str, default='linear', help='Kernel type for SVM')
 args = parser.parse_args()
 
 kernel = args.kernel

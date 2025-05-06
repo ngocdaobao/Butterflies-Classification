@@ -20,7 +20,7 @@ test_set = ImageFolder(root=os.path.join('dataset/test'),
                                            Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]))
 
 # Create the dataloaders
-def get_data_loader(batch_size=64):
+def get_data_loader(batch_size=64, seed = 42):
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
     valid_loader = DataLoader(valid_set, batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=True)

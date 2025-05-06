@@ -10,6 +10,7 @@ import torch.optim as optim
 import torch.nn as nn
 from loguru import logger
 import argparse as arg
+import numpy as np
 
 parser = arg.ArgumentParser(description="Train SVM on the Butterflies dataset")
 parser.add_argument('--kernel', type=str, default='linear', help='Kernel type for SVM')

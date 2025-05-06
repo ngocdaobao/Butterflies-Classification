@@ -39,7 +39,7 @@ if kernel == 'cnn':
     test_labels = []
     for data, labels in tqdm.tqdm(test_loader):
         data = data.to(device)
-        features = feature_extractor(data).view(data.size(0), -1).cpu().numpy()
+        features = feature_extractor(data).view(data.size(0), -1).detach().cpu().numpy()
         test_features.append(features)
         test_labels.append(labels.cpu().numpy())
     

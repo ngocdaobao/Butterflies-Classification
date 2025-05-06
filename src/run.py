@@ -1,4 +1,4 @@
-from src.dataloader import get_data_loader
+from dataloader import get_data_loader
 from model import alexnet_model
 from train import train
 from test import evaluate

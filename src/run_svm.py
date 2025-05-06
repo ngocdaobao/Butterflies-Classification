@@ -22,6 +22,8 @@ kernel = args.kernel
 if kernel == 'cnn':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     extractor_model = alexnet(pretrained=True)
+    for param in extractor_model.parameters():
+        param.requires_grad = False
     feature_extractor = extractor_model.features.to(device).eval()
     train_loader, valid_loader, test_loader = get_data_loader(batch_size=64)
 

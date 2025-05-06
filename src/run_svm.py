@@ -31,7 +31,7 @@ if kernel == 'cnn':
     train_labels = []
     for data, labels in tqdm.tqdm(train_loader):
         data = data.to(device)
-        features = feature_extractor(data).view(data.size(0), -1).cpu().numpy()
+        features = feature_extractor(data).view(data.size(0), -1).detach().cpu().numpy()
         train_features.append(features)
         train_labels.append(labels.cpu().numpy())
     

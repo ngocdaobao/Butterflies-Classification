@@ -16,6 +16,7 @@ from sklearn.decomposition import PCA
 parser = arg.ArgumentParser(description="Train SVM on the Butterflies dataset")
 parser.add_argument('--kernel', type=str, default='linear', help='Kernel type for SVM')
 parser.add_argument('--pca', type=bool, default=False, help='Use PCA for dimensionality reduction')
+parser.add_argument('--component', type=int, default=3000, help='Number of components for PCA')
 #if kernel is linear, set the rest config as None
 parser.add_argument('--batch_size', type=int, default=64, help='Batch size for training')
 parser.add_argument('--seed', type=int, default=42, help='Random seed for reproducibility')
@@ -56,8 +57,8 @@ if kernel == 'cnn':
     y_test = np.hstack(test_labels)
     
     if args.pca:
-        X_train = PCA(n_components=256).fit_transform(X_train)
-        X_test = PCA(n_components=256).fit_transform(X_test)
+        X_train = PCA(n_components=args.component).fit_transform(X_train)
+        X_test = PCA(n_components=args.component).fit_transform(X_test)
     model = SVC()
     model.fit(X_train, y_train)
     pred = model.predict(X_test)
@@ -67,8 +68,8 @@ if kernel == 'cnn':
 else:
     X_train, y_train, X_test, y_test, X_valid, y_valid = get_data_svm()
     if args.pca:
-        X_train = PCA(n_components=256).fit_transform(X_train)
-        X_test = PCA(n_components=256).fit_transform(X_test)
+        X_train = PCA(n_components=args.component).fit_transform(X_train)
+        X_test = PCA(n_components=args.component).fit_transform(X_test)
     model = SVC()
     model.fit(X_train, y_train)
     pred = model.predict(X_test)

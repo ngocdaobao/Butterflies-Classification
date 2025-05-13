@@ -13,7 +13,7 @@ from collections import Counter
 
 # ───── THIẾT LẬP (hard-code) ─────
 # Thay đường dẫn này cho đúng nơi bạn để folder dataset trong project
-DATASET_DIR = r"D:\Github\Butterflies-Classification\dataset"
+DATASET_DIR = r"Butterflies-Classification\dataset"
 
 IMAGE_SIZE = (128, 128)
 HOG_PARAMS = {

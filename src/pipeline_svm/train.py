@@ -13,7 +13,7 @@ from sklearn.metrics import classification_report
 from joblib import dump
 
 # path dataset
-DATASET_DIR = r"D:\Github\Butterflies-Classification\dataset"
+DATASET_DIR = r"Butterflies-Classification\dataset"
 
 # HOG parameters
 IMAGE_SIZE = (64, 64)

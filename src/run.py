@@ -20,6 +20,7 @@ parser.add_argument('--learning_rate', type=float, default=0.01, help='Learning 
 parser.add_argument('--momentum', type=float, default=0.8, help='Momentum for the optimizer')
 parser.add_argument('--step_size', type=int, default=4, help='Step size for the learning rate scheduler')  
 parser.add_argument('--gamma', type=float, default=0.1, help='Gamma for the learning rate scheduler')
+parser.add_argument('--average', type=str, default='macro', help='Average method for metrics (macro or micro)')
 
 args = parser.parse_args()
 batch_size = args.batch_size
@@ -32,7 +33,7 @@ learning_rate = args.learning_rate
 momentum = args.momentum
 step_size = args.step_size
 gamma = args.gamma
-
+average = args.average
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = alexnet_model(pretrained=pretrained, num_classes=num_classes, full_finetune=full_finetune).to(device)
@@ -55,4 +56,4 @@ model.state_dict(torch.save(model.state_dict(), 'model.pth'))
 
 # Evaluate the model
 logger.info("Evaluating model...")
-evaluate(model, device, test_loader)
+evaluate(model, device, test_loader, average=average)

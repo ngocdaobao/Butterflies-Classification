@@ -5,11 +5,13 @@ import torch.nn.functional as F
 from model import alexnet_model
 import tqdm
 from loguru import logger
+import matplotlib.pyplot as plt
 
 def train(model, device, train_loader, valid_loader,
           criterion, optimizer, scheduler=None, num_epochs=10):
     train_losses, train_accs = [], []
     val_losses,   val_accs   = [], []
+    train_loss_list, val_loss_list = [], []
 
     for epoch in range(1, num_epochs+1):
         logger.info(f"EPOCH {epoch}/{num_epochs}")
@@ -27,6 +29,7 @@ def train(model, device, train_loader, valid_loader,
             loss.backward()
             optimizer.step()
 
+            train_loss_list.append(loss.item())
             running_loss   += loss.item() * inputs.size(0)
             running_correct+= (outputs.argmax(1) == labels).sum().item()
 
@@ -45,6 +48,7 @@ def train(model, device, train_loader, valid_loader,
                 outputs = model(inputs)
                 loss    = criterion(outputs, labels)
 
+                val_loss_list.append(loss.item())
                 val_running_loss   += loss.item() * inputs.size(0)
                 val_running_correct+= (outputs.argmax(1) == labels).sum().item()
 
@@ -57,5 +61,7 @@ def train(model, device, train_loader, valid_loader,
         # ——— SCHEDULER ———
         if scheduler is not None:
             scheduler.step()
-
-    return train_losses, train_accs, val_losses, val_accs
+            
+    # Plotting the training and validation loss
+    plt.figure(figsize=(10, 5))
+    return train_losses, train_accs, val_losses, val_accs, train_loss_list, val_loss_list

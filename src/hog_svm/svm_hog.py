@@ -6,7 +6,7 @@ from skimage import color, io, transform
 from skimage.feature import hog
 from sklearn.svm import SVC
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import classification_report
+from sklearn.metrics import precision_recall_fscore_support, classification_report
 from joblib import dump
 from collections import Counter
 
@@ -66,12 +66,27 @@ def main():
     # Đánh giá trên validation
     print("\n=== Classification report on VALIDATION ===")
     y_pred_val = clf.predict(X_val)
-    print(classification_report(y_val, y_pred_val, target_names=classes))
+    print('MICRO avg:')
+    p_micro, r_micro, f1_micro, _ = precision_recall_fscore_support(y_val, y_pred_val, average="micro")
+    print(f"micro avg  precision={p_micro:.3f}  recall={r_micro:.3f}  f1={f1_micro:.3f}")   
+
+    print('MACRO avg:')
+    p_macro, r_macro, f1_macro, _ = precision_recall_fscore_support(y_val, y_pred_val, average="macro")
+    print(f"macro avg  precision={p_macro:.3f}  recall={r_macro:.3f}  f1={f1_macro:.3f}") 
 
     # Đánh giá trên test
     print("\n=== Classification report on TEST ===")
     y_pred = clf.predict(X_test)
-    print(classification_report(y_test, y_pred, target_names=classes, zero_division=1))
+    print('MICRO avg:')
+    accuracy = np.mean(y_pred == y_test)
+    print(f"Accuracy: {accuracy:.3f}")
+    p_micro, r_micro, f1_micro, _ = precision_recall_fscore_support(y_test, y_pred, average="micro")
+    print(f"micro avg  precision={p_micro:.3f}  recall={r_micro:.3f}  f1={f1_micro:.3f}")    
+    #print(classification_report(y_test, y_pred, target_names=classes, zero_division=1))
+
+    print('MACRO avg:')
+    p_macro, r_macro, f1_macro, _ = precision_recall_fscore_support(y_test, y_pred, average="macro", zero_division=1)
+    print(f"macro avg  precision={p_macro:.3f}  recall={r_macro:.3f}  f1={f1_macro:.3f}")
 
     # 5) Lưu model - khi nào cần lưu lại hãng bật lên
     # out_file = 'svm_hog_pycharm.joblib'

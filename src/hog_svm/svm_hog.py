@@ -6,11 +6,12 @@ from skimage import color, io, transform
 from skimage.feature import hog
 from sklearn.svm import SVC
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import precision_recall_fscore_support, classification_report
+from sklearn.metrics import precision_recall_fscore_support, classification_report, recall_score
 from joblib import dump
 from collections import Counter
-
-
+import matplotlib.pyplot as plt
+import random
+import itertools
 # ───── THIẾT LẬP (hard-code) ─────
 # Thay đường dẫn này cho đúng nơi bạn để folder dataset trong project
 DATASET_DIR = r"Butterflies-Classification\dataset"
@@ -59,8 +60,9 @@ def main():
     X_val = scaler.transform(X_val)
     X_test = scaler.transform(X_test)
 
+    """
     # Train SVM
-    clf = SVC(kernel="rbf", C=1.0, gamma="scale", verbose=False, decision_function_shape='ovr')
+    clf = SVC(kernel="rbf", C=10, gamma="scale", verbose=False, decision_function_shape='ovr')
     clf.fit(X_train, y_train)
 
     # Đánh giá trên validation
@@ -92,6 +94,31 @@ def main():
     # out_file = 'svm_hog_pycharm.joblib'
     # dump({'model': clf, 'scaler': scaler, 'classes': classes}, out_file)
     # print(f"\nModel saved to {out_file}")
+
+    print("Accuracy by class:")
+    print("_______________")
+
+    per_class_acc = recall_score(y_test, y_pred, average=None, labels = clf.classes_)
+    for acc, label in zip(per_class_acc, clf.classes_):
+        print(f"{label}: {acc:.3f}")
+    """
+    clf = SVC(kernel="rbf", C=10, gamma="scale", verbose=False, decision_function_shape='ovo')
+    clf.fit(X_train, y_train)
+
+    # Đánh giá trên test
+    print("\n=== Classification report on TEST ===")
+    y_pred = clf.predict(X_test)
+    print('MICRO avg:')
+    accuracy = np.mean(y_pred == y_test)
+    print(f"Accuracy: {accuracy:.3f}")
+    p_micro, r_micro, f1_micro, _ = precision_recall_fscore_support(y_test, y_pred, average="micro")
+    print(f"micro avg  precision={p_micro:.3f}  recall={r_micro:.3f}  f1={f1_micro:.3f}")    
+    #print(classification_report(y_test, y_pred, target_names=classes, zero_division=1))
+
+    print('MACRO avg:')
+    p_macro, r_macro, f1_macro, _ = precision_recall_fscore_support(y_test, y_pred, average="macro", zero_division=1)
+    print(f"macro avg  precision={p_macro:.3f}  recall={r_macro:.3f}  f1={f1_macro:.3f}")
+
 
 if __name__ == "__main__":
     main()
